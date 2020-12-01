@@ -14,6 +14,6 @@ open my $fh, '<', $path;
 chomp(my @lines = <$fh>);
 close $fh;
 
-my $res = find_2020_sum(\@lines);
+my $res = find_2020_sum(\@lines, 2);
 
 print $res->[0] * $res->[1];
