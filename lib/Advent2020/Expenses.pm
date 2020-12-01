@@ -17,7 +17,7 @@ sub find_2020_sum {
     my $i = 0;
     my $target = 2020;
 
-    foreach my $v (reverse @$input) {
+    foreach my $v (@$input) {
         if (_find_sums($input, $i + 1, $target - $v) > 0) {
             push @$res, $v;
             $target -= $v;
