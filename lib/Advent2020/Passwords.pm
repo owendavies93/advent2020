@@ -12,12 +12,17 @@ our @EXPORT_OK = qw(check_password);
 my $jescache = {};
 
 sub check_password {
-    my $line = shift;
+    my ($line, $pos_rule) = @_;
 
     my $info = _tokenise($line);
 
-    return all { _check_constraint($_, $info->{pass}) } 
-           @{$info->{constraints}};
+    if ($pos_rule) {
+        return all { _check_position_constraint($_, $info->{pass}) }
+               @{$info->{constraints}};
+    } else {
+        return all { _check_constraint($_, $info->{pass}) }
+               @{$info->{constraints}};
+    }
 }
 
 sub _check_constraint {
@@ -38,6 +43,16 @@ sub _check_constraint {
     } else {
         return 0;
     }
+}
+
+sub _check_position_constraint {
+    my ($constraint, $password) = @_;
+
+    my $l = substr($password, $constraint->{lower} - 1, 1);
+    my $u = substr($password, $constraint->{upper} - 1, 1);
+
+    return ($l eq $constraint->{letter} && $u ne $constraint->{letter}) ||
+           ($l ne $constraint->{letter} && $u eq $constraint->{letter});
 }
 
 sub _tokenise {
