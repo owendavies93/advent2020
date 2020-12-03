@@ -7,9 +7,12 @@ use Const::Fast;
 use Exporter;
 
 const my $TREE => '#';
+const my $LIMIT => 10000;
 
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(read_into_2d_array find_trees);
+
+my $jescache = {};
 
 sub read_into_2d_array {
     my $data = shift;
@@ -33,8 +36,20 @@ sub find_trees {
 
     for (my $i = $skip; $i < $y; $i += $skip) {
         my $line = $data->[$i];
-        $total += ($line->[$pos % $x] eq $TREE);
+        my $key = (join '', @$line) . '-' . $i . '-' . $pos;
+
+        if (defined $jescache->{$key}) {
+            $total += $jescache->{$key};
+            next;
+        } else {
+            my $test = $line->[$pos % $x] eq $TREE;
+            $total += $test;
+            $jescache->{$key} = $test;
+        }
+
         $pos += $jump;
+
+        $jescache = {} if scalar keys %$jescache > $LIMIT;
     }
 
     return $total;
