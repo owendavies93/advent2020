@@ -40,7 +40,6 @@ sub find_trees {
 
         if (defined $jescache->{$key}) {
             $total += $jescache->{$key};
-            next;
         } else {
             my $test = $line->[$pos % $x] eq $TREE;
             $total += $test;
