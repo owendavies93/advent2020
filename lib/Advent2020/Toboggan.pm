@@ -6,7 +6,6 @@ use warnings;
 use Const::Fast;
 use Exporter;
 
-const my $JUMP => 3;
 const my $TREE => '#';
 
 our @ISA = qw(Exporter);
@@ -25,17 +24,17 @@ sub read_into_2d_array {
 }
 
 sub find_trees {
-    my $data = shift;
+    my ($data, $jump, $skip) = @_;
 
     my $x = scalar @{$data->[0]};
     my $y = scalar @$data;
     my $total = 0;
-    my $pos = $JUMP;
+    my $pos = $jump;
 
-    for(my $i = 1; $i <= $y; $i++) {
+    for (my $i = $skip; $i < $y; $i += $skip) {
         my $line = $data->[$i];
         $total += ($line->[$pos % $x] eq $TREE);
-        $pos += $JUMP;
+        $pos += $jump;
     }
 
     return $total;
