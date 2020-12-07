@@ -6,7 +6,8 @@ use warnings;
 use Exporter;
 
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(create_mappings check_bag);
+our @EXPORT_OK = qw(create_mappings create_num_mappings check_bag
+                    check_bag_count);
 
 my $colour_mappings = {};
 my $jescache = {};
@@ -22,6 +23,17 @@ sub create_mappings {
     }
 }
 
+sub create_num_mappings {
+    my $lines = shift;
+
+    foreach my $l (@$lines) {
+        my ($key, $l_mappings) = _tokenise($l);
+        foreach my $m (@$l_mappings) {
+            push @{$colour_mappings->{$key}}, $m;
+        }
+    }
+}
+
 sub check_bag {
     my $bag = shift;
     
@@ -32,6 +44,18 @@ sub check_bag {
             $count++;
             $count += check_bag($b);
         }
+    }
+
+    return $count;
+}
+
+sub check_bag_count {
+    my $bag = shift;
+
+    my $count = 0;
+    foreach my $b (@{$colour_mappings->{$bag}}) {
+        my $total = $b->{num} + $b->{num} * check_bag_count($b->{desc});
+        $count += $total;
     }
 
     return $count;
