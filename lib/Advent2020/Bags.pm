@@ -9,40 +9,45 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(create_mappings create_num_mappings check_bag
                     check_bag_count);
 
-my $colour_mappings = {};
 my $jescache = {};
 
 sub create_mappings {
     my $lines = shift;
 
+    my $colour_mappings = {};
     foreach my $l (@$lines) {
         my ($key, $l_mappings) = _tokenise($l);
         foreach my $m (@$l_mappings) {
             push @{$colour_mappings->{$m->{desc}}}, $key;
         }
     }
+
+    return $colour_mappings;
 }
 
 sub create_num_mappings {
     my $lines = shift;
 
+    my $colour_mappings = {};
     foreach my $l (@$lines) {
         my ($key, $l_mappings) = _tokenise($l);
         foreach my $m (@$l_mappings) {
             push @{$colour_mappings->{$key}}, $m;
         }
     }
+
+    return $colour_mappings;
 }
 
 sub check_bag {
-    my $bag = shift;
+    my ($mappings, $bag) = @_;
     
     my $count = 0;
-    foreach my $b (@{$colour_mappings->{$bag}}) {
+    foreach my $b (@{$mappings->{$bag}}) {
         if (!defined $jescache->{$b}) {
             $jescache->{$b} = 1;
             $count++;
-            $count += check_bag($b);
+            $count += check_bag($mappings, $b);
         }
     }
 
@@ -50,11 +55,11 @@ sub check_bag {
 }
 
 sub check_bag_count {
-    my $bag = shift;
+    my ($mappings, $bag) = @_;
 
     my $count = 0;
-    foreach my $b (@{$colour_mappings->{$bag}}) {
-        my $total = $b->{num} + $b->{num} * check_bag_count($b->{desc});
+    foreach my $b (@{$mappings->{$bag}}) {
+        my $total = $b->{num} + $b->{num} * check_bag_count($mappings, $b->{desc});
         $count += $total;
     }
 

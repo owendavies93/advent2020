@@ -9,6 +9,5 @@ use Advent2020::Bags qw(create_mappings check_bag);
 
 chomp(my @lines = <>);
 
-create_mappings(\@lines);
+print check_bag(create_mappings(\@lines), 'shiny gold') . "\n";
 
-print check_bag('shiny gold') . "\n";
