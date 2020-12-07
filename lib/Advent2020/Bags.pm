@@ -6,8 +6,8 @@ use warnings;
 use Exporter;
 
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(create_mappings create_num_mappings check_bag
-                    check_bag_count);
+our @EXPORT_OK =
+    qw(create_mappings create_num_mappings check_bag check_bag_count);
 
 my $jescache = {};
 
@@ -59,7 +59,8 @@ sub check_bag_count {
 
     my $count = 0;
     foreach my $b (@{$mappings->{$bag}}) {
-        my $total = $b->{num} + $b->{num} * check_bag_count($mappings, $b->{desc});
+        my $total = $b->{num} +
+                    $b->{num} * check_bag_count($mappings, $b->{desc});
         $count += $total;
     }
 
