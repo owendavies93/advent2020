@@ -46,8 +46,7 @@ sub run {
 }
 
 sub parse_comm {
-    my $line = shift;
-    return $line =~ /^(\w+)\s+(.*)$/;
+    split ' ', shift;
 }
 
 1;
