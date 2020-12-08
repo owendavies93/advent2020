@@ -16,16 +16,12 @@ const my $COMS => {
     },
     acc => sub {
         my ($arg, $ptr, $acc) = @_;
-        my ($op, $num) = _parse_arg($arg);
-        
         $ptr++;
-        return $op eq '+' ? ($ptr, $acc + $num) : ($ptr, $acc - $num);
+        return ($ptr, $acc + $arg);
     },
     jmp => sub {
         my ($arg, $ptr, $acc) = @_;
-        my ($op, $num) = _parse_arg($arg);
-
-        return $op eq '+' ? ($ptr + $num, $acc) : ($ptr - $num, $acc);
+        return ($ptr + $arg, $acc);
     },
 };
 
@@ -53,11 +49,6 @@ sub run {
 sub parse_comm {
     my $line = shift;
     return $line =~ /^(\w+)\s+(.*)$/;
-}
-
-sub _parse_arg {
-    my $arg = shift;
-    return $arg =~ /^(\+|\-)(\d+)$/;
 }
 
 1;
