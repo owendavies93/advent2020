@@ -12,12 +12,11 @@ our @EXPORT_OK = qw(run parse_comm);
 const my $COMS => {
     nop => sub {
         my ($arg, $ptr, $acc) = @_;
-        return ($ptr + 1, $acc);
+        return (++$ptr, $acc);
     },
     acc => sub {
         my ($arg, $ptr, $acc) = @_;
-        $ptr++;
-        return ($ptr, $acc + $arg);
+        return (++$ptr, $acc + $arg);
     },
     jmp => sub {
         my ($arg, $ptr, $acc) = @_;
