@@ -5,11 +5,10 @@ use warnings;
 
 use lib '../lib/';
 
-use Advent2020::Expenses qw(find_2020_sum);
-use Data::Dumper;
+use Advent2020::Utils qw(find_sum_pair);
 
 chomp(my @lines = <>);
 
-my $res = find_2020_sum(\@lines, 2);
+my @res = find_sum_pair(2020, @lines);
 
-print $res->[0] * $res->[1];
+print $res[0] * $res[1] . "\n";
