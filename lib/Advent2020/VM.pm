@@ -7,7 +7,7 @@ use Const::Fast;
 use Exporter;
 
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(run step parse_comm);
+our @EXPORT_OK = qw(run run_with_loops step parse_comm);
 
 const my $COMS => {
     nop => sub {
@@ -25,24 +25,11 @@ const my $COMS => {
 };
 
 sub run {
-    my @comms = @_;
-    
-    my $acc = 0;
-    my $ptr = 0;
-    my $tracker = {};
+    return _run(0, 0, 1, @_);
+}
 
-    while ($ptr < (scalar @comms)) {
-        if (defined $tracker->{$ptr}) {
-            warn "loop! - acc: " . $acc . "\n";
-            return 0;
-        }
-
-        $tracker->{$ptr} = 1;
-
-        ($ptr, $acc) = step($acc, $ptr, $comms[$ptr]);
-    }
-
-    return $acc;
+sub run_with_loops {
+    return _run(0, 0, 0, @_);
 }
 
 sub step {
@@ -54,6 +41,27 @@ sub step {
 
 sub parse_comm {
     split ' ', shift;
+}
+
+sub _run {
+    my ($acc, $ptr, $tracking, @comms) = @_;
+
+    my $tracker = {};
+
+    while ($ptr < (scalar @comms)) {
+        if ($tracking) {
+            if (defined $tracker->{$ptr}) {
+                warn "loop! - acc: " . $acc . "\n";
+                return 0;
+            }
+
+            $tracker->{$ptr} = 1;
+        }
+
+        ($ptr, $acc) = step($acc, $ptr, $comms[$ptr]);
+    }
+
+    return $acc;
 }
 
 1;
