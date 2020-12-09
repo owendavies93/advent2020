@@ -7,7 +7,12 @@ use Const::Fast;
 use Exporter;
 
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(run run_with_loops step parse_comm);
+our @EXPORT_OK = qw(
+    parse_comm
+    run
+    run_with_loops
+    step
+);
 
 const my $COMS => {
     nop => sub {
@@ -24,6 +29,10 @@ const my $COMS => {
     },
 };
 
+sub parse_comm {
+    split ' ', shift;
+}
+
 sub run {
     return _run(0, 0, 1, @_);
 }
@@ -37,10 +46,6 @@ sub step {
 
     my ($c, $a) = parse_comm($comm);
     return $COMS->{$c}->($a, $ptr, $acc);
-}
-
-sub parse_comm {
-    split ' ', shift;
 }
 
 sub _run {
