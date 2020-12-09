@@ -3,8 +3,6 @@
 use strict;
 use warnings;
 
-use lib '../lib/';
-
 use Const::Fast;
 
 const my $PREAMBLE => 25;
