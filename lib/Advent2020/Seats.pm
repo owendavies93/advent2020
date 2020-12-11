@@ -4,9 +4,7 @@ use strict;
 use warnings;
 
 use Const::Fast;
-use Data::Compare;
 use Exporter;
-use Storable qw(dclone);
 
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(count_occupied run_all_rounds);
@@ -25,11 +23,8 @@ sub count_occupied {
 sub run_all_rounds {
     my ($input, $distance, $limit) = @_;
 
-    my $old;
-
-    while (!Compare($input, $old)) {
-        $old = dclone($input);
-        $input = step_round($input, $distance, $limit);
+    while (1) {
+        last if !step_round($input, $distance, $limit);
     }
 
     return $input;
@@ -38,7 +33,7 @@ sub run_all_rounds {
 sub step_round {
     my ($input, $distance, $limit) = @_;
 
-    my $ret = dclone($input);
+    my @change;
 
     for (my $i = 0; $i < @{$input->[0]}; $i++) {
         for (my $j = 0; $j < @$input; $j++) {
@@ -48,15 +43,29 @@ sub step_round {
 
             if (_is_empty($seat) && 
                 _get_seen_seats($input, $i, $j, $distance) == 0) {
-                $ret->[$j]->[$i] = '#';
+
+                push @change, { 
+                    x  => $i,
+                    y  => $j, 
+                    to => '#'
+                };
             } elsif (_is_occupied($seat) &&
                      _get_seen_seats($input, $i, $j, $distance) >= $limit) {
-                $ret->[$j]->[$i] = 'L';
+
+                push @change, { 
+                    x  => $i,
+                    y  => $j, 
+                    to => 'L'
+                };
             }
         }
     }
 
-    return $ret;
+    foreach my $c (@change) {
+        $input->[$c->{y}]->[$c->{x}] = $c->{to};
+    }
+
+    return @change;
 }
 
 sub _get_seen_seats {
