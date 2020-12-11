@@ -9,7 +9,7 @@ use Exporter;
 use Storable qw(dclone);
 
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(count_occupied print_seats run_all_rounds);
+our @EXPORT_OK = qw(count_occupied run_all_rounds);
 
 sub count_occupied {
     my $input = shift;
@@ -20,14 +20,6 @@ sub count_occupied {
     }
 
     return $total;
-}
-
-sub print_seats {
-    my $input = shift;
-
-    foreach my $row (@$input) {
-        print join ('', @$row) . "\n";
-    }
 }
 
 sub run_all_rounds {
@@ -67,26 +59,6 @@ sub step_round {
     return $ret;
 }
 
-sub _get_adjacent {
-    my ($input, $x, $y) = @_;
-
-    my @xs = (-1, 0, 1, 1, 1, 0,-1,-1);
-    my @ys = ( 1, 1, 1, 0,-1,-1,-1, 0);
-
-    my $res = [];
-    for (my $i = 0; $i < @xs; $i++) {
-        my $x_ = $x + $xs[$i];
-        next if $x_ < 0 || $x_ >= @{$input->[0]};
-
-        my $y_ = $y + $ys[$i];
-        next if $y_ < 0 || $y_ >= @$input;
-
-        push $res, $input->[$y_]->[$x_];
-    }
-
-    return $res;
-}
-
 sub _get_seen_seats {
     my ($input, $x, $y, $max_dist) = @_;
 
@@ -107,9 +79,7 @@ sub _get_seen_seats {
 
             $count++ if _is_occupied($input->[$y_]->[$x_]);
 
-            if (_is_empty($input->[$y_]->[$x_]) || _is_occupied($input->[$y_]->[$x_])) {
-                $hit = 1;
-            }
+            $hit = 1 if _is_seat($input->[$y_]->[$x_]);
 
             $mult++;
         }
@@ -124,6 +94,11 @@ sub _is_empty {
 
 sub _is_occupied {
     return shift eq '#';
+}
+
+sub _is_seat {
+    my $seat = shift;
+    return _is_empty($seat) || _is_occupied($seat);
 }
 
 1;
