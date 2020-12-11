@@ -5,8 +5,8 @@ use warnings;
 
 use lib '../lib/';
 
-use Advent2020::Toboggan qw(read_into_2d_array);
 use Advent2020::Seats qw(count_occupied run_all_rounds);
+use Advent2020::Utils qw(read_into_2d_array);
 
 chomp(my @lines = <>);
 

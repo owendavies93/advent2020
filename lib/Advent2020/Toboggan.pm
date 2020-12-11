@@ -10,21 +10,9 @@ const my $TREE => '#';
 const my $LIMIT => 10000;
 
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(read_into_2d_array find_trees);
+our @EXPORT_OK = qw(find_trees);
 
 my $jescache = {};
-
-sub read_into_2d_array {
-    my $data = shift;
-
-    my $ret = [];
-
-    foreach my $line (@$data) {
-        push @$ret, [ split //, $line ];
-    }
-
-    return $ret;
-}
 
 sub find_trees {
     my ($data, $jump, $skip) = @_;

@@ -5,7 +5,8 @@ use warnings;
 
 use lib '../lib/';
 
-use Advent2020::Toboggan qw(read_into_2d_array find_trees);
+use Advent2020::Toboggan qw(find_trees);
+use Advent2020::Utils qw(read_into_2d_array);
 
 chomp(my @lines = <>);
 
