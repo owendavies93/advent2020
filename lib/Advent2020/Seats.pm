@@ -31,20 +31,20 @@ sub print_seats {
 }
 
 sub run_all_rounds {
-    my $input = shift;
+    my ($input, $distance, $limit) = @_;
 
     my $old;
 
     while (!Compare($input, $old)) {
         $old = dclone($input);
-        $input = step_round($input);
+        $input = step_round($input, $distance, $limit);
     }
 
     return $input;
 }
 
 sub step_round {
-    my $input = shift;
+    my ($input, $distance, $limit) = @_;
 
     my $ret = dclone($input);
 
@@ -55,9 +55,10 @@ sub step_round {
             next if $seat eq '.';
 
             if (_is_empty($seat) && 
-                _get_seen_seats($input, $i, $j) == 0) {
+                _get_seen_seats($input, $i, $j, $distance) == 0) {
                 $ret->[$j]->[$i] = '#';
-            } elsif (_is_occupied($seat) && _get_seen_seats($input, $i, $j) >= 5) {
+            } elsif (_is_occupied($seat) &&
+                     _get_seen_seats($input, $i, $j, $distance) >= $limit) {
                 $ret->[$j]->[$i] = 'L';
             }
         }
@@ -87,7 +88,7 @@ sub _get_adjacent {
 }
 
 sub _get_seen_seats {
-    my ($input, $x, $y) = @_;
+    my ($input, $x, $y, $max_dist) = @_;
 
     my @xs = (-1, 0, 1, 1, 1, 0,-1,-1);
     my @ys = ( 1, 1, 1, 0,-1,-1,-1, 0);
@@ -97,7 +98,7 @@ sub _get_seen_seats {
         my $hit = 0;
         my $mult = 1;
 
-        while (!$hit) {
+        while (!$hit && $mult <= $max_dist) {
             my $x_ = $x + $xs[$i] * $mult;
             last if $x_ < 0 || $x_ >= @{$input->[0]};
 

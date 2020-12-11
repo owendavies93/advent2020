@@ -12,6 +12,6 @@ chomp(my @lines = <>);
 
 my $arr = read_into_2d_array(\@lines);
 
-$arr = run_all_rounds($arr);
+$arr = run_all_rounds($arr, 1, 4);
 
 print count_occupied($arr) . "\n";
