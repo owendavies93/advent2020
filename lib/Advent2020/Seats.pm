@@ -70,16 +70,19 @@ sub _get_seen_seats {
         my $hit = 0;
         my $mult = 1;
 
-        while (!$hit && $mult <= $max_dist) {
+        while ($mult <= $max_dist) {
             my $x_ = $x + $xs[$i] * $mult;
             last if $x_ < 0 || $x_ >= @{$input->[0]};
 
             my $y_ = $y + $ys[$i] * $mult;
             last if $y_ < 0 || $y_ >= @$input;
 
-            $count++ if _is_occupied($input->[$y_]->[$x_]);
+            if (_is_occupied($input->[$y_]->[$x_])) {
+                $count++;
+                last;
+            }
 
-            $hit = 1 if _is_seat($input->[$y_]->[$x_]);
+            last if _is_empty($input->[$y_]->[$x_]);
 
             $mult++;
         }
@@ -94,11 +97,6 @@ sub _is_empty {
 
 sub _is_occupied {
     return shift eq '#';
-}
-
-sub _is_seat {
-    my $seat = shift;
-    return _is_empty($seat) || _is_occupied($seat);
 }
 
 1;
