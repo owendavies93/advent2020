@@ -47,14 +47,12 @@ for (1..6) {
         }
     }
 
-    my $state_with_expansion = { %$state, %$expanded_state };
-
     my $next_state = {};
-    for my $pos (keys %$state_with_expansion) {
+    for my $pos (keys %$expanded_state) {
         my ($x, $y, $z, $w) = _get_coords_from_pos($pos);
         
-        if ($state_with_expansion->{$pos} == 3 ||
-            (defined $state->{$pos} && $state_with_expansion->{$pos} == 2)) {
+        if ($expanded_state->{$pos} == 3 ||
+            (defined $state->{$pos} && $expanded_state->{$pos} == 2)) {
             $next_state = _store_state($next_state, $x, $y, $z, $w);
         }
     }
