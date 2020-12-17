@@ -65,38 +65,6 @@ for (1..6) {
 print scalar keys %$state;
 print "\n";
 
-sub _print_state {
-    my $state = shift;
-    
-    my ($maxx, $maxy, $maxz) = (0, 0, 0);
-    my $minz = 0;
-    foreach (keys %$state) {
-        my ($x, $y, $z) = _get_coords_from_pos($_);
-        
-        $maxx = $x if $x > $maxx;
-        $maxy = $y if $y > $maxy;
-        $maxz = $z if $z > $maxz;
-        
-        $minz = $z if $z < $minz;
-    }
-    
-    for my $z ($minz..$maxz) {
-        print "z=$z\n";
-
-        for my $y (0..$maxy) {
-            for my $x (0..$maxx) {
-                if ($state->{"$x~$y~$z"}) {
-                    print "#";
-                } else {
-                    print ".";
-                }
-            }
-            print "\n";
-        }
-        print "\n";
-    }
-}
-
 sub _store_state {
     my ($state, $x, $y, $z, $w) = @_;
 
