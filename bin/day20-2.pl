@@ -62,11 +62,8 @@ my $tiles_dimension = sqrt $num_tiles;
 my @rotations = (0, 90, 180, 270);
 my @possible_answers;
 my $excluded_answers = {};
-my $i = 0;
-# xxx: probably way too many
-my $max = ($num_tiles)^2 * scalar @rotations * 2;
 
-OUTER: while($i < $max) {
+OUTER: while(1) {
     my $answer = '';
     my $jes_cache = {};
     my $current_tiles = {};
@@ -115,19 +112,14 @@ OUTER: while($i < $max) {
             }
 
             $excluded_answers->{$answer} = 1;
-            $i++;
             next OUTER;
         }
     }
     
-    say "found a solution";
     $excluded_answers->{$answer} = 1;
     push @possible_answers, $current_tiles;
-    $i++;
+    last if scalar @possible_answers == scalar @rotations * 2;
 }
-
-say "done finding solutions";
-say scalar @possible_answers;
 
 my $min = 1000000;
 foreach my $candidate (@possible_answers) {
@@ -200,17 +192,10 @@ sub _count_excluding_monster_hashes {
     
     for (my $y = 0; $y < $image_height; $y++) {
         for (my $x = 0; $x < $image_width; $x++) {
-            if (defined $all_monsters->{$x}->{$y}) {
-                print 'O';
-            } else {
-                print $image->[$y]->[$x];
-            }
-
             if ($image->[$y]->[$x] eq '#' && !defined $all_monsters->{$x}->{$y}) {
                 $total++; 
             }
         }
-        print "\n";
     }
 
     return $total;
