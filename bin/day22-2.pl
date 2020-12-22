@@ -33,9 +33,7 @@ sub _game {
 
     while (@$p1 > 0 && @$p2 > 0) {
         my $cache_key = _key($p1, $p2);
-        if (exists $jes_cache->{$cache_key}) {
-            return ($i > 0) ? 1 : _score(@$p1);
-        }
+        return 1 if exists $jes_cache->{$cache_key};
 
         $jes_cache->{$cache_key}++;
 
